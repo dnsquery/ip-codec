@@ -1,4 +1,4 @@
-import { encode, decode, name, formatOf, v4, v6, sizeOf } from '@leichtgewicht/ip-codec';
+import { encode, decode, name, v4, v6, sizeOf, familyOf } from '@leichtgewicht/ip-codec';
 import { Buffer } from 'buffer';
 
 const ip: "ip" = name;
@@ -15,8 +15,8 @@ buf = encode('::', Buffer.alloc);
 // $ExpectError
 buf = encode('127.0.0.1');
 
-const format: 4 | 6 = formatOf("hi");
-const size: 4 | 16 = sizeOf("hi")
+const size: 4 | 16 = sizeOf('hi');
+const family: 1 | 2 = familyOf('hi');
 
 let bool: boolean = v4.isFormat('127.0.0.1');
 bool = v6.isFormat('::ffff');

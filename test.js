@@ -1,6 +1,6 @@
 const test = require('fresh-tape')
 const Buffer = require('buffer').Buffer
-const { encode, decode, sizeOf, formatOf, familyOf, v4, v6 } = require('.')
+const { encode, decode, sizeOf, familyOf, v4, v6 } = require('.')
 
 test('should convert to buffer IPv4 address', async t => {
   const buf = encode('127.0.0.1')
@@ -66,16 +66,13 @@ test('dedicated encoding v4/v6', async t => {
   t.deepEqual(encode('::'), v6.encode('::'))
 })
 
-test('sizeOf/formatOf test', async t => {
+test('sizeOf/familyOf test', async t => {
   t.equal(sizeOf('127.0.0.1'), 4)
-  t.equal(formatOf('127.0.0.1'), 4)
   t.equal(familyOf('127.0.0.1'), 1)
   t.equal(sizeOf('::'), 16)
-  t.equal(formatOf('::'), 6)
   t.equal(familyOf('::'), 2)
-  t.throws(() => formatOf(''))
   t.throws(() => sizeOf(''))
-  t.throws(() => formatOf('?'))
+  t.throws(() => familyOf(''))
   t.throws(() => sizeOf('?'))
   t.throws(() => familyOf('?'))
 })

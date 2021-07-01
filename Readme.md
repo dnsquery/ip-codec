@@ -8,16 +8,12 @@ Supports IPV4 and IPV6.
 The basics are straigthforward
 
 ```js
-const { encode, decode, formatOf, sizeOf, familyOf } = require('@leichtgewicht/ip-codec')
+const { encode, decode, sizeOf, familyOf } = require('@leichtgewicht/ip-codec')
 
 const uint8Array = encode("127.0.0.1")
 const str = decode(uint8Array)
 
 try {
-  switch formatOf(str) {
-    case 4: // IPv4
-    case 6: // IPv6
-  }
   switch sizeOf(str) {
     case 4: // IPv4
     case 16: // IPv6

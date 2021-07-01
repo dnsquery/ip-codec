@@ -12,7 +12,6 @@ interface Codec<TName extends string, TSize extends number> {
   isFormat(ip: string): boolean;
 }
 
-export function formatOf(ip: string): 4 | 6;
 export function sizeOf(ip: string): 4 | 16;
 export function familyOf(ip: string): 1 | 2;
 export const v4: Codec<"ipv4", 4>;

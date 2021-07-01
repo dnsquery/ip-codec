@@ -11,7 +11,6 @@ module.exports = Object.freeze({
   name: 'ip',
   sizeOf,
   familyOf: string => sizeOf(string) === ipv4.size ? 1 : 2,
-  formatOf: string => sizeOf(string) === ipv4.size ? 4 : 6,
   v4: ipv4,
   v6: ipv6,
   encode (ip, buff, offset) {
