@@ -65,7 +65,8 @@ ipv6.decode(ipv6.encode('::'))
 
 The code in this package was originally extracted from [node-ip](https://github.com/indutny/node-ip) and since improved.
 
-The 
+Notable changes are the removal of the `Buffer` dependency and better support for detection of
+formats and allocation of buffers.
 
 ## License
 
