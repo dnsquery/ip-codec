@@ -2,12 +2,8 @@ const ipv4 = require('./ipv4-codec.js')
 const ipv6 = require('./ipv6-codec.js')
 
 function sizeOf (ip) {
-  if (ipv4.isFormat(ip)) {
-    return ipv4.size
-  }
-  if (ipv6.isFormat(ip)) {
-    return ipv6.size
-  }
+  if (ipv4.isFormat(ip)) return ipv4.size
+  if (ipv6.isFormat(ip)) return ipv6.size
   throw Error(`Invalid ip address: ${ip}`)
 }
 
