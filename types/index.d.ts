@@ -14,8 +14,8 @@ interface Codec<TName extends string, TSize extends number> {
 
 export function formatOf(ip: string): 4 | 6;
 export function sizeOf(ip: string): 4 | 16;
-export const ipv4: Codec<"ipv4", 4>;
-export const ipv6: Codec<"ipv6", 16>;
+export const v4: Codec<"ipv4", 4>;
+export const v6: Codec<"ipv6", 16>;
 export const name: "ip";
 export const encode: {
   (ip: string): Uint8Array;

@@ -55,10 +55,10 @@ encode('127.0.0.1', Buffer.alloc)
 You can also de/encode ipv4 or ipv6 specifically:
 
 ```js
-const { ipv4, ipv6 } = require('@leichtgewicht/ip-codec')
+const { v4, v6 } = require('@leichtgewicht/ip-codec')
 
-ipv4.decode(ipv4.encode('127.0.0.1'))
-ipv6.decode(ipv6.encode('::'))
+v4.decode(v4.encode('127.0.0.1'))
+v6.decode(v6.encode('::'))
 ```
 
 ## History

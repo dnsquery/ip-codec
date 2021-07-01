@@ -15,8 +15,8 @@ module.exports = Object.freeze({
   name: 'ip',
   sizeOf,
   formatOf: string => sizeOf(string) === ipv4.size ? 4 : 6,
-  ipv4,
-  ipv6,
+  v4: ipv4,
+  v6: ipv6,
   encode (ip, buff, offset) {
     offset = ~~offset
     const size = sizeOf(ip)

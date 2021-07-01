@@ -1,6 +1,6 @@
 const test = require('fresh-tape')
 const Buffer = require('buffer').Buffer
-const { encode, decode, sizeOf, formatOf } = require('.')
+const { encode, decode, sizeOf, formatOf, v4, v6 } = require('.')
 
 test('should convert to buffer IPv4 address', async t => {
   const buf = encode('127.0.0.1')
@@ -59,6 +59,11 @@ test('should use on-demand allocation', async t => {
   t.equal(buf.toString('hex'), '7f000001')
   buf = encode('127.0.0.1', size => Buffer.alloc(size + 2), 4)
   t.equal(buf.toString('hex'), '000000007f0000010000')
+})
+
+test('dedicated encoding v4/v6', async t => {
+  t.deepEqual(encode('127.0.0.1'), v4.encode('127.0.0.1'))
+  t.deepEqual(encode('::'), v6.encode('::'))
 })
 
 test('sizeOf/formatOf test', async t => {
