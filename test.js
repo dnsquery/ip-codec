@@ -24,6 +24,8 @@ test('should convert to buffer IPv6 address', t => {
   t.equal(decode(buf), '::1')
   t.equal(decode(encode('1::')), '1::')
   t.equal(decode(encode('abcd::dcba')), 'abcd::dcba')
+  t.equal(decode(encode('::ffff:c0a8:100')), '::ffff:c0a8:100')
+  t.equal(decode(encode('::ffff:ff00')), '::ffff:ff00')
   t.end()
 })
 
