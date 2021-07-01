@@ -21,6 +21,6 @@ export const encode: {
   (ip: string): Uint8Array;
   <TIn extends Uint8Array = Uint8Array> (ip: string, buff: TIn | ((size: number) => TIn), offset?: number): TIn
 };
-export const decode: (ip: Uint8Array, offset?: number, length?: number) => string;
+export function decode(ip: Uint8Array, offset?: number, length?: number): string;
 
 export {};
