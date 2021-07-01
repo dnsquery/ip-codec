@@ -75,6 +75,7 @@ const v6 = {
     return result
   },
   decode (buff, offset) {
+    offset = ~~offset
     const result = []
     for (let i = 0; i < v6Size; i += 2) {
       result.push((buff[offset + i] << 8 | buff[offset + i + 1]).toString(16))
