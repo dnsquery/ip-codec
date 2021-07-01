@@ -1,6 +1,6 @@
 {
   "name": "@leichtgewicht/ip-codec",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Small package to encode or decode IP addresses from buffers to strings.",
   "main": "index.js",
   "types": "types",
