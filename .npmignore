@@ -1,0 +1,5 @@
+.github
+types/tsconfig.json
+types/test.ts
+coverage
+*.tgz
