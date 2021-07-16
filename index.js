@@ -9,20 +9,24 @@ const v4 = {
   isFormat: ip => v4Regex.test(ip),
   encode (ip, buff, offset) {
     offset = ~~offset
-    const result = buff || new Uint8Array(offset + v4Size)
-    ip.split(/\./g).forEach((byte, index) => {
-      result[offset + index] = parseInt(byte, 10) & 0xff
-    })
-    return result
+    buff = buff || new Uint8Array(offset + v4Size)
+    const max = ip.length
+    let n = 0
+    for (let i = 0; i < max;) {
+      const c = ip.charCodeAt(i++)
+      if (c === 46) { // "."
+        buff[offset++] = n
+        n = 0
+      } else {
+        n = n * 10 + (c - 48)
+      }
+    }
+    buff[offset] = n
+    return buff
   },
   decode (buff, offset) {
     offset = ~~offset
-    return [
-      buff[offset],
-      buff[offset + 1],
-      buff[offset + 2],
-      buff[offset + 3]
-    ].join('.')
+    return `${buff[offset++]}.${buff[offset++]}.${buff[offset++]}.${buff[offset]}`
   }
 }
 
@@ -34,6 +38,8 @@ function hex (byte) {
   return byte
 }
 
+const internalV4 = new Uint8Array(v4Size)
+
 const v6 = {
   name: 'v6',
   size: v6Size,
@@ -44,7 +50,7 @@ const v6 = {
 
     for (let i = 0; i < sections.length; i++) {
       if (v4.isFormat(sections[i])) {
-        const v4Buffer = v4.encode(sections[i])
+        const v4Buffer = v4.encode(sections[i], internalV4, 0)
         sections[i] = hex(v4Buffer[0]) + hex(v4Buffer[1])
         if (++i < 8) {
           sections.splice(i, 0, hex(v4Buffer[2]) + hex(v4Buffer[3]))
@@ -66,13 +72,13 @@ const v6 = {
       sections.splice.apply(sections, argv)
     }
 
-    const result = buff || new Uint8Array(offset + v6Size)
+    buff = buff || new Uint8Array(offset + v6Size)
     for (const section of sections.slice(0, 8)) {
       const word = parseInt(section, 16)
-      result[offset++] = (word >> 8) & 0xff
-      result[offset++] = word & 0xff
+      buff[offset++] = (word >> 8) & 0xff
+      buff[offset++] = word & 0xff
     }
-    return result
+    return buff
   },
   decode (buff, offset) {
     offset = ~~offset
