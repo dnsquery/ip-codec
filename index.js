@@ -30,63 +30,136 @@ const v4 = {
   }
 }
 
-function hex (byte) {
-  byte = byte.toString(16)
-  if (byte.length === 1) {
-    return '0' + byte
-  }
-  return byte
-}
-
-const internalV4 = new Uint8Array(v4Size)
-
 const v6 = {
   name: 'v6',
   size: v6Size,
   isFormat: ip => ip.length > 0 && v6Regex.test(ip),
   encode (ip, buff, offset) {
     offset = ~~offset
-    const sections = ip.split(':', 8)
-
-    for (let i = 0; i < sections.length; i++) {
-      if (v4.isFormat(sections[i])) {
-        const v4Buffer = v4.encode(sections[i], internalV4, 0)
-        sections[i] = hex(v4Buffer[0]) + hex(v4Buffer[1])
-        if (++i < 8) {
-          sections.splice(i, 0, hex(v4Buffer[2]) + hex(v4Buffer[3]))
-        }
-      }
-    }
-
-    if (sections[0] === '') {
-      while (sections.length < 8) sections.unshift('0')
-    } else if (sections[sections.length - 1] === '') {
-      while (sections.length < 8) sections.push('0')
-    } else if (sections.length < 8) {
-      let i = 0
-      while (i < sections.length && sections[i] !== '') i++
-      const argv = [i, 1]
-      for (i = 9 - sections.length; i > 0; i--) {
-        argv.push('0')
-      }
-      sections.splice.apply(sections, argv)
-    }
-
+    let end = offset + v6Size
+    let fill = -1
+    let hexN = 0
+    let decN = 0
+    let prevColon = true
+    let useDec = false
     buff = buff || new Uint8Array(offset + v6Size)
-    for (const section of sections.slice(0, 8)) {
-      const word = parseInt(section, 16)
-      buff[offset++] = (word >> 8) & 0xff
-      buff[offset++] = word & 0xff
+    // Note: This algorithm needs to check if the offset
+    // could exceed the buffer boundaries as it supports
+    // non-standard compliant encodings that may go beyond
+    // the boundary limits. if (offset < end) checks should
+    // not be necessary...
+    for (let i = 0; i < ip.length; i++) {
+      let c = ip.charCodeAt(i)
+      if (c === 58) { // :
+        if (prevColon) {
+          if (fill !== -1) {
+            // Not Standard! (standard doesn't allow multiple ::)
+            // We need to treat
+            if (offset < end) buff[offset] = 0
+            if (offset < end - 1) buff[offset + 1] = 0
+            offset += 2
+          } else if (offset < end) {
+            // :: in the middle
+            fill = offset
+          }
+        } else {
+          // : ends the previous number
+          if (useDec === true) {
+            // Non-standard! (ipv4 should be at end only)
+            // A ipv4 address should not be found anywhere else but at
+            // the end. This codec also support putting characters
+            // after the ipv4 address..
+            if (offset < end) buff[offset] = decN
+            offset++
+          } else {
+            if (offset < end) buff[offset] = hexN >> 8
+            if (offset < end - 1) buff[offset + 1] = hexN & 0xff
+            offset += 2
+          }
+          hexN = 0
+          decN = 0
+        }
+        prevColon = true
+        useDec = false
+      } else if (c === 46) { // . indicates IPV4 notation
+        if (offset < end) buff[offset] = decN
+        offset++
+        decN = 0
+        hexN = 0
+        prevColon = false
+        useDec = true
+      } else {
+        prevColon = false
+        if (c >= 97) {
+          c -= 87 // a-f ... 97~102 -87 => 10~15
+        } else if (c >= 65) {
+          c -= 55 // A-F ... 65~70 -55 => 10~15
+        } else {
+          c -= 48 // 0-9 ... starting from charCode 48
+          decN = decN * 10 + c
+        }
+        // We don't know yet if its a dec or hex number
+        hexN = (hexN << 4) + c
+      }
+    }
+    if (prevColon === false) {
+      // Commiting last number
+      if (useDec === true) {
+        if (offset < end) buff[offset] = decN
+        offset++
+      } else {
+        if (offset < end) buff[offset] = hexN >> 8
+        if (offset < end - 1) buff[offset + 1] = hexN & 0xff
+        offset += 2
+      }
+    } else if (fill === 0) {
+      // Not Standard! (standard doesn't allow multiple ::)
+      // This means that a : was found at the start AND end which means the
+      // end needs to be treated as 0 entry...
+      if (offset < end) buff[offset] = 0
+      if (offset < end - 1) buff[offset + 1] = 0
+      offset += 2
+    } else if (fill !== -1) {
+      // Non-standard! (standard doens't allow multiple ::)
+      // Here we find that there has been a :: somewhere in the middle
+      // and the end. To treat the end with priority we need to move all
+      // written data two bytes to the right.
+      offset += 2
+      for (let i = Math.min(offset - 1, end - 1); i >= fill + 2; i--) {
+        buff[i] = buff[i - 2]
+      }
+      buff[fill] = 0
+      buff[fill + 1] = 0
+      fill = offset
+    }
+    if (fill !== offset && fill !== -1) {
+      // Move the written numbers to the end while filling the everything
+      // "fill" to the bytes with zeros.
+      if (offset > end - 2) {
+        // Non Standard support, when the cursor exceeds bounds.
+        offset = end - 2
+      }
+      while (end > fill) {
+        buff[--end] = offset < end && offset > fill ? buff[--offset] : 0
+      }
+    } else {
+      // Fill the rest with zeros
+      while (offset < end) {
+        buff[offset++] = 0
+      }
     }
     return buff
   },
   decode (buff, offset) {
     offset = ~~offset
-    const result = []
+    let result = ''
     for (let i = 0; i < v6Size; i += 2) {
-      result.push((buff[offset + i] << 8 | buff[offset + i + 1]).toString(16))
+      if (i !== 0) {
+        result += ':'
+      }
+      result += (buff[offset + i] << 8 | buff[offset + i + 1]).toString(16)
     }
-    return result.join(':')
+    return result
       .replace(/(^|:)0(:0)*:0(:|$)/, '$1::$3')
       .replace(/:{3,4}/, '::')
   }
