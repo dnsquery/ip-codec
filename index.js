@@ -67,7 +67,7 @@ const v6 = {
     }
 
     const result = buff || new Uint8Array(offset + v6Size)
-    for (const section of sections) {
+    for (const section of sections.slice(0, 8)) {
       const word = parseInt(section, 16)
       result[offset++] = (word >> 8) & 0xff
       result[offset++] = word & 0xff
