@@ -26,7 +26,7 @@ jobs:
             node: 14
           - id: ubuntu:16
             os: ubuntu-latest
-            node: lts:*
+            node: lts/*
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
@@ -41,7 +41,7 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
       with:
-        node-version: lts:*
+        node-version: lts/*
     - run: npm i
     - run: npm run lint
     - run: npm run coverage
