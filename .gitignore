@@ -2,3 +2,4 @@ coverage
 package-lock.json
 *.tgz
 index.cjs
+test.cjs

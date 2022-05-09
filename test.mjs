@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer'
-import { encode, decode, sizeOf, familyOf, v4, v6 } from './index.mjs'
+import { encode, decode, sizeOf, familyOf, v4, v6 } from '@leichtgewicht/ip-codec'
 import crypto from 'crypto'
 import test from 'fresh-tape'
 

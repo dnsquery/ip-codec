@@ -12,28 +12,38 @@ jobs:
           - id: ubuntu:10
             os: ubuntu-latest
             node: 6
+            test: test.cjs
           - id: ubuntu:10
             os: ubuntu-latest
             node: 8
+            test: test.cjs
           - id: ubuntu:10
             os: ubuntu-latest
             node: 10
+            test: test.cjs
           - id: windows:12
             os: windows-latest
             node: 12
+            test: test.cjs
           - id: macos:14
             os: macos-latest
             node: 14
+            test: test.mjs
+          - id: ubuntu:18
+            os: ubuntu-latest
+            node: 18
+            test: test.mjs
           - id: ubuntu:16
             os: ubuntu-latest
             node: lts/*
+            test: test.mjs
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node }}
     - run: npm i
-    - run: npm run unit
+    - run: npx fresh-tape ${{ matrix.test }}
 
   strict:
     runs-on: ubuntu-latest
