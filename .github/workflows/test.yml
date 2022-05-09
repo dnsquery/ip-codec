@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+    needs: strict
     strategy:
       matrix:
         include:
@@ -34,7 +35,7 @@ jobs:
     - run: npm i
     - run: npm run unit
 
-  lint:
+  strict:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
