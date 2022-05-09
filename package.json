@@ -2,12 +2,19 @@
   "name": "@leichtgewicht/ip-codec",
   "version": "2.0.3",
   "description": "Small package to encode or decode IP addresses from buffers to strings.",
-  "main": "index.js",
+  "main": "index.cjs",
   "types": "types",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.cjs"
+    }
+  },
   "scripts": {
     "lint": "standard && dtslint --localTs node_modules/typescript/lib types",
-    "test": "fresh-tape test.js",
-    "test-cov": "c8 npm run test"
+    "test": "fresh-tape test.mjs",
+    "test-cov": "c8 npm run test",
+    "prepare": "esm2umd ipCodec index.mjs > index.cjs"
   },
   "repository": {
     "type": "git",
@@ -31,6 +38,7 @@
   "devDependencies": {
     "c8": "^7.11.2",
     "dtslint": "^4.2.1",
+    "esm2umd": "^0.2.0",
     "fresh-tape": "^5.5.3",
     "standard": "^17.0.0",
     "typescript": "^4.6.4"

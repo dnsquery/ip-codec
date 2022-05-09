@@ -3,7 +3,7 @@ const v4Size = 4
 const v6Regex = /^(::)?(((\d{1,3}\.){3}(\d{1,3}){1})?([0-9a-f]){0,4}:{0,2}){1,8}(::)?$/i
 const v6Size = 16
 
-const v4 = {
+export const v4 = {
   name: 'v4',
   size: v4Size,
   isFormat: ip => v4Regex.test(ip),
@@ -30,7 +30,7 @@ const v4 = {
   }
 }
 
-const v6 = {
+export const v6 = {
   name: 'v6',
   size: v6Size,
   isFormat: ip => ip.length > 0 && v6Regex.test(ip),
@@ -165,38 +165,37 @@ const v6 = {
   }
 }
 
-function sizeOf (ip) {
+export const name = 'ip'
+export function sizeOf (ip) {
   if (v4.isFormat(ip)) return v4.size
   if (v6.isFormat(ip)) return v6.size
   throw Error(`Invalid ip address: ${ip}`)
 }
 
-module.exports = Object.freeze({
-  name: 'ip',
-  sizeOf,
-  familyOf: string => sizeOf(string) === v4.size ? 1 : 2,
-  v4,
-  v6,
-  encode (ip, buff, offset) {
-    offset = ~~offset
-    const size = sizeOf(ip)
-    if (typeof buff === 'function') {
-      buff = buff(offset + size)
-    }
-    if (size === v4.size) {
-      return v4.encode(ip, buff, offset)
-    }
-    return v6.encode(ip, buff, offset)
-  },
-  decode (buff, offset, length) {
-    offset = ~~offset
-    length = length || (buff.length - offset)
-    if (length === v4.size) {
-      return v4.decode(buff, offset, length)
-    }
-    if (length === v6.size) {
-      return v6.decode(buff, offset, length)
-    }
-    throw Error(`Invalid buffer size needs to be ${v4.size} for v4 or ${v6.size} for v6.`)
+export function familyOf (string) {
+  return sizeOf(string) === v4.size ? 1 : 2
+}
+
+export function encode (ip, buff, offset) {
+  offset = ~~offset
+  const size = sizeOf(ip)
+  if (typeof buff === 'function') {
+    buff = buff(offset + size)
   }
-})
+  if (size === v4.size) {
+    return v4.encode(ip, buff, offset)
+  }
+  return v6.encode(ip, buff, offset)
+}
+
+export function decode (buff, offset, length) {
+  offset = ~~offset
+  length = length || (buff.length - offset)
+  if (length === v4.size) {
+    return v4.decode(buff, offset, length)
+  }
+  if (length === v6.size) {
+    return v6.decode(buff, offset, length)
+  }
+  throw Error(`Invalid buffer size needs to be ${v4.size} for v4 or ${v6.size} for v6.`)
+}

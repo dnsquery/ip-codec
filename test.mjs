@@ -1,7 +1,7 @@
-const test = require('fresh-tape')
-const Buffer = require('buffer').Buffer
-const { encode, decode, sizeOf, familyOf, v4, v6 } = require('.')
-const crypto = require('crypto')
+import { Buffer } from 'buffer'
+import { encode, decode, sizeOf, familyOf, v4, v6 } from './index.mjs'
+import crypto from 'crypto'
+import test from 'fresh-tape'
 
 test('IPv4 addresses tests', t => {
   t.ok(v4.isFormat('0.0.0.0'))
