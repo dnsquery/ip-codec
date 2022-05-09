@@ -11,7 +11,7 @@ import esm2umd from 'esm2umd'
     const target = `${name}.cjs`
     await fs.promises.writeFile(
       new URL(target, dirname),
-      esm2umd(process.argv[2], esmFile, { importInterop: 'node' })
+      esm2umd(process.argv[2], esmFile, { importInterop: 'node' }).replace('@leichtgewicht/ip-codec', '.')
     )
   }
 })()
