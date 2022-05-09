@@ -12,8 +12,9 @@
   },
   "scripts": {
     "lint": "standard && dtslint --localTs node_modules/typescript/lib types",
-    "test": "fresh-tape test.mjs",
-    "test-cov": "c8 npm run test",
+    "test": "npm run lint && npm run unit",
+    "unit": "fresh-tape test.mjs",
+    "coverage": "c8 npm run unit",
     "prepare": "esm2umd ipCodec index.mjs > index.cjs"
   },
   "repository": {

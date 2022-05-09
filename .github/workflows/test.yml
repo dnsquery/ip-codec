@@ -32,7 +32,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm i
-    - run: npm run test-cov
+    - run: npm run coverage
 
   lint:
     runs-on: ubuntu-latest
