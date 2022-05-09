@@ -15,7 +15,7 @@
     "test": "npm run lint && npm run unit",
     "unit": "fresh-tape test.mjs",
     "coverage": "c8 npm run unit",
-    "prepare": "./scripts/esm2umd.mjs ipCodec index.mjs > index.cjs; ./scripts/esm2umd.mjs ipCodecTest test.mjs > test.cjs"
+    "prepare": "node ./scripts/esm2umd.mjs ipCodec"
   },
   "repository": {
     "type": "git",
