@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/martinheidegger/ip-codec.git"
+    "url": "git+https://github.com/dnsquery/ip-codec.git"
   },
   "keywords": [
     "ip",
@@ -34,9 +34,9 @@
   "author": "Martin Heidegger",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/martinheidegger/ip-codec/issues"
+    "url": "https://github.com/dnsquery/ip-codec/issues"
   },
-  "homepage": "https://github.com/martinheidegger/ip-codec#readme",
+  "homepage": "https://github.com/dnsquery/ip-codec#readme",
   "devDependencies": {
     "@definitelytyped/dtslint": "0.2.19",
     "@leichtgewicht/esm2umd": "^0.4.0",
